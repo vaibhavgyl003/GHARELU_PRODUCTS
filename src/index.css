@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom font for the project (Inter is the default for Tailwind, but ensuring good practice) */
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+}

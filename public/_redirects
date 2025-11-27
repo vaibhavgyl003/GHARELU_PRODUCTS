@@ -1,0 +1,5 @@
+# Netlify redirects file
+# Ensure assets are accessible
+/assets/*  /assets/:splat  200
+
+

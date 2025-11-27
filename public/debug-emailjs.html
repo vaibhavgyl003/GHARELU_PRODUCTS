@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmailJS Debug Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #034225;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EmailJS Debug Test</h1>
+        <p>This will test EmailJS with your actual credentials and show detailed error messages.</p>
+        
+        <button onclick="testEmailJS()">Test EmailJS Send</button>
+        
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
+            logDiv.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        async function testEmailJS() {
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML = '';
+            
+            log('Starting EmailJS test...');
+            
+            try {
+                // Test parameters
+                const testParams = {
+                    to_email: 'tushar01.jha@gmail.com',
+                    to_name: 'Gharelu Origins Team',
+                    from_name: 'Test User',
+                    from_email: 'test@example.com',
+                    subject: 'Test Email from Debug Page',
+                    message_html: '<p>This is a test email from the debug page.</p>',
+                    reply_to: 'test@example.com',
+                };
+                
+                log('EmailJS Configuration:');
+                log('Service ID: service_bbnpyrh');
+                log('Template ID: template_t6gf4mj');
+                log('Public Key: Y84evwBNKpU6z9dWf');
+                log('');
+                log('Sending email with parameters:');
+                log(JSON.stringify(testParams, null, 2));
+                
+                log('Calling emailjs.send with public key as 4th parameter...');
+                // EmailJS v4: publicKey is passed as 4th parameter
+                const result = await emailjs.send(
+                    'service_bbnpyrh',
+                    'template_t6gf4mj',
+                    testParams,
+                    'Y84evwBNKpU6z9dWf' // Public key as 4th parameter
+                );
+                
+                log('EmailJS Response:', 'success');
+                log(JSON.stringify(result, null, 2), 'success');
+                
+                if (result.status === 200) {
+                    log('✅ SUCCESS! Email sent successfully!', 'success');
+                    log('Check your inbox at: tushar01.jha@gmail.com', 'success');
+                } else {
+                    log(`⚠️ Warning: Status is ${result.status}`, 'error');
+                }
+                
+            } catch (error) {
+                log('❌ ERROR occurred:', 'error');
+                log(`Error message: ${error.message || 'Unknown error'}`, 'error');
+                log(`Error text: ${error.text || 'N/A'}`, 'error');
+                log(`Error status: ${error.status || 'N/A'}`, 'error');
+                
+                if (error.response) {
+                    log('Error response:', 'error');
+                    log(JSON.stringify(error.response, null, 2), 'error');
+                }
+                
+                log('Full error object:', 'error');
+                log(JSON.stringify(error, null, 2), 'error');
+                
+                // Try to get more details
+                if (error.text) {
+                    try {
+                        const errorData = JSON.parse(error.text);
+                        log('Parsed error data:', 'error');
+                        log(JSON.stringify(errorData, null, 2), 'error');
+                    } catch (e) {
+                        log(`Raw error text: ${error.text}`, 'error');
+                    }
+                }
+            }
+        }
+        
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            log('Page loaded. Click the button to test EmailJS.');
+        });
+    </script>
+</body>
+</html>
+
